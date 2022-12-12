@@ -11,10 +11,9 @@ namespace algos_lab2
 
         public int FIRST(Vertex vertex)
         {
-            foreach(Edge e in Edges){
+            foreach(Edge e in Edges)
                 if(e.From == vertex)
                     return e.To.Number;
-            }
 
             return 00;
         }
@@ -45,22 +44,18 @@ namespace algos_lab2
 
         public void ADD_E(Edge edge) { Edges.Add(edge); }
 
-        public void EDIT_V(string name, int date)
+        public void EDIT_V(string name, int number)
         {
             for (int i = 0; i < Vertexes.Count; i++)
-            {
                 if (Vertexes[i].Name == name)
-                    Vertexes[i].Number = date;
-            }
+                    Vertexes[i].Number = number;
         }
 
         public void EDIT_E(Vertex to, Vertex from, int weight)
         {
             for (int i = 0; i < Edges.Count; i++)
-            {
                 if (to == Edges[i].To && from == Edges[i].From)
                     Edges[i].Weight = weight;
-            }
         }
 
         public void DEL_V(string name)
@@ -68,17 +63,21 @@ namespace algos_lab2
             for (int i = 0; i < Vertexes.Count; i++)
             {
                 if (Vertexes[i].Name == name)
+                {
+                    for (int j = 0; j < Edges.Count; j++)
+                        if (Vertexes[i] == Edges[j].To && Vertexes[i] == Edges[j].From)
+                            Edges.RemoveAt(j);
                     Vertexes.RemoveAt(i);
+                }
             }
+
         }
 
         public void DEL_E(Vertex to, Vertex from)
         {
             for (int i = 0; i < Edges.Count; i++)
-            {
                 if (to == Edges[i].To && from == Edges[i].From)
                     Edges.RemoveAt(i);
-            }
         }
 
         public List<Vertex> BFS2(Vertex start)
@@ -90,10 +89,8 @@ namespace algos_lab2
             {
                 vertex = list[i];
                 foreach (var item in VERTEX(vertex))
-                {
                     if (!list.Contains(item))
                         list.Add(item);
-                }
             }
             return list;
         }

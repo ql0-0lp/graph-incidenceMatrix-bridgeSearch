@@ -6,10 +6,10 @@
         public Vertex To { get; set; }
         public int Weight { get; set; }
 
-        public Edge(Vertex from, Vertex to, int weight)
+        public Edge(Vertex to, Vertex from, int weight)
         {
-            From = from;
             To = to;
+            From = from;
             Weight = weight;
         }
     }
