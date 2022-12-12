@@ -15,7 +15,7 @@ namespace algos_lab2
                 if(e.From == vertex)
                     return e.To.Number;
 
-            return 00;
+            return 0;
         }
 
         public int NEXT(Vertex vertex, int i)
@@ -28,7 +28,7 @@ namespace algos_lab2
                 if (e.From == vertex && i == e.To.Number)
                     check = true;
             }
-            return 00;
+            return 0;
         }
 
         public List<Vertex> VERTEX(Vertex vertex)
@@ -43,20 +43,6 @@ namespace algos_lab2
         public void ADD_V(Vertex vertex) { Vertexes.Add(vertex); }
 
         public void ADD_E(Edge edge) { Edges.Add(edge); }
-
-        public void EDIT_V(string name, int number)
-        {
-            for (int i = 0; i < Vertexes.Count; i++)
-                if (Vertexes[i].Name == name)
-                    Vertexes[i].Number = number;
-        }
-
-        public void EDIT_E(Vertex to, Vertex from, int weight)
-        {
-            for (int i = 0; i < Edges.Count; i++)
-                if (to == Edges[i].To && from == Edges[i].From)
-                    Edges[i].Weight = weight;
-        }
 
         public void DEL_V(string name)
         {
@@ -80,6 +66,34 @@ namespace algos_lab2
                     Edges.RemoveAt(i);
         }
 
+        public void EDIT_V(string name, int number)
+        {
+            for (int i = 0; i < Vertexes.Count; i++)
+                if (Vertexes[i].Name == name)
+                    Vertexes[i].Number = number;
+        }
+
+        public void EDIT_E(Vertex to, Vertex from, int weight)
+        {
+            for (int i = 0; i < Edges.Count; i++)
+                if (to == Edges[i].To && from == Edges[i].From)
+                    Edges[i].Weight = weight;
+        }
+
+        public List<Vertex> BFS(Vertex start)
+        {
+            List<Vertex> list = BFS2(start);
+            foreach (var item in Vertexes)
+            {
+                if (!list.Contains(item))
+                {
+                    list.AddRange(BFS2(item));
+                    Compomemt++;
+                }
+            }
+            return list;
+        }
+
         public List<Vertex> BFS2(Vertex start)
         {
             List<Vertex> list = new List<Vertex>();
@@ -95,22 +109,36 @@ namespace algos_lab2
             return list;
         }
 
-        public List<Vertex> BFS(Vertex start)
+        public List<Edge> FindBridges()
         {
-            List<Vertex> list = new List<Vertex>();
-            foreach (var item in Vertexes)
+            List<Edge> bridges = new List<Edge>();
+            int[] vertexSteps = new int[Vertexes.Count];
+
+            for (int i = 0; i < Vertexes.Count; i++)
+                foreach (var item in BFS(Vertexes[i]))
+                    vertexSteps[item.Number]++;
+
+            List<int> indexes = new List<int>();
+            for (int i = 0; i < vertexSteps.Length-1; i++)
+                if (vertexSteps[i] < vertexSteps[i+1])
+                    indexes.Add(i);
+
+            foreach (var item in indexes)
             {
-                if (!list.Contains(item))
-                {
-                    list.AddRange(BFS2(item));
-                    Compomemt++;
-                }
+                for (int i = 0; i < Edges.Count; i++)
+                    if (Vertexes[item + 1] == Edges[i].To && Vertexes[item] == Edges[i].From)
+                    {
+                        bridges.Add(Edges[i]);
+                        break;
+                    }
             }
-            return list;
+
+            return bridges;
         }
 
         public void Print()
         {
+            Console.WriteLine("Матрица инциндетности:");
             foreach (var v in Vertexes)
             {
                 Console.Write(v.Number + ": ");
